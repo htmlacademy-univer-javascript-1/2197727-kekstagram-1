@@ -4,7 +4,7 @@ const getNumber = (begin, end) => {
 console.log(getNumber(1, 6));
 //https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Math/random
 
-const stringLength = (verifiedString, maxLine) => {
+const getStringLength = (verifiedString, maxLine) => {
   return (verifiedString.length <= maxLine) ? true : false;
 }
-console.log(stringLength("Кекс", 6));
+console.log(getStringLength("Кекс", 6));
