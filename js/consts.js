@@ -43,5 +43,19 @@ const CountComment = {
 const DEFAULT_RENDERED_COMMENTS = 5;
 const MAX_COUNT_PHOTOS = 25;
 const STEP_ADDED_COMMENTS = 5;
+const MAX_LENGTH_STRING = 140;
+const MAX_COUNT_HASHTAG = 5;
+const MAX_LENGTH_HASHTAG = 20;
 
-export { NAMES, MESSAGES, DESCRIPTIONS, CountLike, AvatarNumber, DEFAULT_RENDERED_COMMENTS, CountComment, MAX_COUNT_PHOTOS, STEP_ADDED_COMMENTS };
+const ErrorMessage = {
+  START_WITH: 'Хэш-тег должен начинаться с символа #',
+  UNACCEPTABLE_SYMBOLS: 'Хэш-тег содержит недопустимые символы',
+  ONLY_ONE_GRID: 'Хэш-тег состоит из одной #',
+  MAX_LENGTH_HASHTAG: `Максимальная длина одного хэш-тега ${MAX_LENGTH_HASHTAG} символов, включая #`,
+  SEPARATED_BY_SPACES: 'Хэш-теги должны разделяться пробелами',
+  NO_REPEAT: 'Хэш-тег не может быть использован дважды',
+  MAX_COUNT_HASHTAG: `Нельзя указать больше ${MAX_COUNT_HASHTAG} хэш-тегов`,
+  MAX_LENGTH_COMMENT: `Максимальная длина комментария ${MAX_LENGTH_STRING} символов`
+};
+
+export { NAMES, MESSAGES, DESCRIPTIONS, CountLike, AvatarNumber, DEFAULT_RENDERED_COMMENTS, CountComment, MAX_COUNT_PHOTOS, STEP_ADDED_COMMENTS, MAX_LENGTH_STRING, MAX_COUNT_HASHTAG, MAX_LENGTH_HASHTAG, ErrorMessage };
