@@ -14,7 +14,7 @@ let errorMessage = '';
 
 const error = () => errorMessage;
 
-const checkPristine = new Pristine(form, {
+const pristine = new Pristine(form, {
   classTo: 'img-upload__field-wrapper',
   errorTextParent: 'img-upload__field-wrapper',
   errorTextClass: 'img-upload__error-text'
@@ -49,7 +49,7 @@ const addFieldListeners = (field) => {
 };
 
 const buttonAdjustment = () => {
-  submitButton.disabled = !checkPristine.validate();
+  submitButton.disabled = !pristine.validate();
 };
 
 const onImgUploadFieldchange = () => {
@@ -151,8 +151,8 @@ const commentHandler = (string) => {
 };
 
 const validateForm = () => {
-  checkPristine.addValidator(hashtagsField, hashtagsHandler, error);
-  checkPristine.addValidator(commentsField, commentHandler, error);
+  pristine.addValidator(hashtagsField, hashtagsHandler, error);
+  pristine.addValidator(commentsField, commentHandler, error);
   buttonAdjustment();
 };
 

@@ -67,7 +67,7 @@ function onBigPictureCloseBtnClick() {
 }
 
 function onWindowEscKeydown(evt) {
-  if ( isEscapeKey (evt) ) {
+  if (isEscapeKey(evt)) {
     closeBigPicture();
     document.removeEventListener('keydown', onWindowEscKeydown);
   }
