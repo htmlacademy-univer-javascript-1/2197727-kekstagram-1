@@ -10,6 +10,10 @@ const closeButton = form.querySelector('.img-upload__cancel');
 const hashtagsField = form.querySelector('.text__hashtags');
 const commentsField = form.querySelector('.text__description');
 
+let errorMessage = '';
+
+const error = () => errorMessage;
+
 const checkPristine = new Pristine(form, {
   classTo: 'img-upload__field-wrapper',
   errorTextParent: 'img-upload__field-wrapper',
@@ -62,10 +66,6 @@ const getUniqueHashtags = (hashtags) => {
   const uniqueSet = new Set(hashtags);
   return hashtags.length === uniqueSet.size;
 };
-
-let errorMessage = '';
-
-const error = () => errorMessage;
 
 const hashtagsHandler = (string) => {
   errorMessage = '';
@@ -143,6 +143,7 @@ const commentHandler = (string) => {
   };
 
   const isInvalid = rule.check;
+
   if(isInvalid) {
     errorMessage = rule.error;
   }
