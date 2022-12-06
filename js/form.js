@@ -121,9 +121,11 @@ const hashtagsHandler = (string) => {
 
   return rules.every((rule) => {
     const isInvalid = rule.check;
+
     if(isInvalid) {
       errorMessage = rule.error;
     }
+
     return !isInvalid;
   });
 };
@@ -147,6 +149,7 @@ const commentHandler = (string) => {
   if(isInvalid) {
     errorMessage = rule.error;
   }
+
   return !isInvalid;
 };
 
