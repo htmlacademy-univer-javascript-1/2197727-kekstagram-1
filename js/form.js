@@ -1,5 +1,7 @@
 import { MAX_LENGTH_STRING, MAX_COUNT_HASHTAG, MAX_LENGTH_HASHTAG, ErrorMessage } from './consts.js';
 import { checkStringLength, isEscapeKey } from './utils.js';
+import { onFilterButtonChange, effectList, sliderWrapper } from './effect-filters.js';
+import { onScaleButtonClick, scaleContainer } from './photo-scale.js';
 
 const body = document.querySelector('body');
 const form = document.querySelector('.img-upload__form');
@@ -9,9 +11,9 @@ const submitButton = document.querySelector('.img-upload__submit');
 const closeButton = form.querySelector('.img-upload__cancel');
 const hashtagsField = form.querySelector('.text__hashtags');
 const commentsField = form.querySelector('.text__description');
+const imgPreview = document.querySelector('.img-upload__preview').querySelector('img');
 
 let errorMessage = '';
-
 const error = () => errorMessage;
 
 const pristine = new Pristine(form, {
@@ -23,20 +25,24 @@ const pristine = new Pristine(form, {
 const closeUploadPopup  = () => {
   editImg.classList.add('hidden');
   body.classList.remove('modal-open');
+  scaleContainer.removeEventListener('click', onScaleButtonClick);
+  effectList.removeEventListener('change', onFilterButtonChange);
+  imgPreview.removeAttribute('class');
+  imgPreview.removeAttribute('style');
   form.reset();
 };
 
-const onButtonEscKeydown = (evt) => {
+function onButtonEscKeydown(evt) {
   if (isEscapeKey(evt)) {
     closeUploadPopup();
     document.removeEventListener('keydown', onButtonEscKeydown);
   }
-};
+}
 
-const onCloseButtonClick = () => {
+function onCloseButtonClick() {
   closeUploadPopup();
   document.removeEventListener('keydown', onButtonEscKeydown);
-};
+}
 
 const addFieldListeners = (field) => {
   field.addEventListener('focus', () => {
@@ -57,6 +63,9 @@ const onImgUploadFieldchange = () => {
   body.classList.add('modal-open');
   closeButton.addEventListener('click', onCloseButtonClick);
   document.addEventListener('keydown',onButtonEscKeydown);
+  sliderWrapper.classList.add('hidden');
+  scaleContainer.addEventListener('click', onScaleButtonClick);
+  effectList.addEventListener('change', onFilterButtonChange);
   addFieldListeners(commentsField);
   addFieldListeners(hashtagsField);
   buttonAdjustment();

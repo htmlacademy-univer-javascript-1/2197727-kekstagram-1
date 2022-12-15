@@ -1,4 +1,4 @@
-const NAMES = [
+export const NAMES = [
   'Аркадий Шапулов',
   'Пион Розевский',
   'Нагарья Ларузьева',
@@ -10,7 +10,7 @@ const NAMES = [
   'Малина Малинская'
 ];
 
-const MESSAGES = [
+export const MESSAGES = [
   'Всё отлично!',
   'В целом всё неплохо. Но не всё.',
   'Когда вы делаете фотографию, хорошо бы убирать палец из кадра. В конце концов это просто непрофессионально.',
@@ -19,35 +19,35 @@ const MESSAGES = [
   'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!'
 ];
 
-const DESCRIPTIONS = [
+export const DESCRIPTIONS = [
   'Вперед и только вперед!',
   'Лучшее время...',
   'Когда пошли за цветами, но купили не цветы'
 ];
 
-const CountLike = {
+export const CountLike = {
   MIN: 15,
   MAX: 200
 };
 
-const AvatarNumber = {
+export const AvatarNumber = {
   MIN: 1,
   MAX: 6
 };
 
-const CountComment = {
+export const CountComment = {
   MIN: 0,
   MAX: 23
 };
 
-const DEFAULT_RENDERED_COMMENTS = 5;
-const MAX_COUNT_PHOTOS = 25;
-const STEP_ADDED_COMMENTS = 5;
-const MAX_LENGTH_STRING = 140;
-const MAX_COUNT_HASHTAG = 5;
-const MAX_LENGTH_HASHTAG = 20;
+export const DEFAULT_RENDERED_COMMENTS = 5;
+export const MAX_COUNT_PHOTOS = 25;
+export const STEP_ADDED_COMMENTS = 5;
+export const MAX_LENGTH_STRING = 140;
+export const MAX_COUNT_HASHTAG = 5;
+export const MAX_LENGTH_HASHTAG = 20;
 
-const ErrorMessage = {
+export const ErrorMessage = {
   START_WITH: 'Хэш-тег должен начинаться с символа #',
   UNACCEPTABLE_SYMBOLS: 'Хэш-тег содержит недопустимые символы',
   ONLY_ONE_GRID: 'Хэш-тег состоит из одной #',
@@ -58,4 +58,8 @@ const ErrorMessage = {
   MAX_LENGTH_COMMENT: `Максимальная длина комментария ${MAX_LENGTH_STRING} символов`
 };
 
-export { NAMES, MESSAGES, DESCRIPTIONS, CountLike, AvatarNumber, DEFAULT_RENDERED_COMMENTS, CountComment, MAX_COUNT_PHOTOS, STEP_ADDED_COMMENTS, MAX_LENGTH_STRING, MAX_COUNT_HASHTAG, MAX_LENGTH_HASHTAG, ErrorMessage };
+export const PercentageScale = {
+  STEP: 25,
+  MIN: 25,
+  MAX: 100
+};
