@@ -1,6 +1,5 @@
 import { MAX_LENGTH_STRING, MAX_COUNT_HASHTAG, MAX_LENGTH_HASHTAG, ErrorMessage } from './consts.js';
 import { checkStringLength, isEscapeKey } from './utils.js';
-import { onFilterButtonChange, effectList, sliderWrapper } from './effect-filters.js';
 import { onScaleButtonClick, scaleContainer } from './photo-scale.js';
 
 const body = document.querySelector('body');
@@ -12,9 +11,115 @@ const closeButton = form.querySelector('.img-upload__cancel');
 const hashtagsField = form.querySelector('.text__hashtags');
 const commentsField = form.querySelector('.text__description');
 const imgPreview = document.querySelector('.img-upload__preview').querySelector('img');
+const slider = document.querySelector('.effect-level__slider');
+const sliderWrapper = document.querySelector('.effect-level');
+const effectValue = document.querySelector('.effect-level__value');
+const onEffectListChange = document.querySelector('.effects__list');
 
 let errorMessage = '';
 const error = () => errorMessage;
+
+const Effect = {
+  chrome: {
+    filter: 'grayscale',
+    units: '',
+    options: {
+      range: {
+        min: 0,
+        max: 1,
+      },
+      start: 1,
+      step: 0.1,
+    }
+  },
+  sepia: {
+    filter: 'sepia',
+    units: '',
+    options: {
+      range: {
+        min: 0,
+        max: 1,
+      },
+      start: 1,
+      step: 0.1,
+    }
+  },
+  marvin: {
+    filter: 'invert',
+    units: '%',
+    options: {
+      range: {
+        min: 0,
+        max: 100,
+      },
+      start: 100,
+      step: 1,
+    }
+  },
+  phobos: {
+    filter: 'blur',
+    units: 'px',
+    options: {
+      range: {
+        min: 0,
+        max: 3,
+      },
+      start: 3,
+      step: 0.1,
+    }
+  },
+  heat: {
+    filter: 'brightness',
+    units: '',
+    options: {
+      range: {
+        min: 1,
+        max: 3,
+      },
+      start: 3,
+      step: 0.1,
+    }
+  }
+};
+
+const initEffects = () => {
+  noUiSlider.create(slider, {
+    range: {
+      min: 0,
+      max: 100,
+    },
+    start: 100,
+    step: 0.1,
+    connect: 'lower',
+    format: {
+      to: (value) => {
+        if (Number.isInteger(value)) {
+          return value.toFixed(0);
+        }
+        return value.toFixed(1);
+      },
+      from: (value) => parseFloat(value),
+    },
+  });
+};
+
+const onFilterButtonChange = (evt) => {
+  const evtHandler = evt.target.value;
+
+  if (evtHandler === 'none') {
+    sliderWrapper.classList.add('hidden');
+    imgPreview.style.filter = 'none';
+  } else {
+    sliderWrapper.classList.remove('hidden');
+    imgPreview.removeAttribute('class');
+    imgPreview.classList.add(`effects__preview--${evtHandler}`);
+    slider.noUiSlider.updateOptions(Effect[evtHandler].options);
+    slider.noUiSlider.on('update', () => {
+      effectValue.value = slider.noUiSlider.get();
+      imgPreview.style.filter = `${Effect[evtHandler].filter}(${effectValue.value}${Effect[evtHandler].units})`;
+    });
+  }
+};
 
 const pristine = new Pristine(form, {
   classTo: 'img-upload__field-wrapper',
@@ -26,7 +131,9 @@ const closeUploadPopup  = () => {
   editImg.classList.add('hidden');
   body.classList.remove('modal-open');
   scaleContainer.removeEventListener('click', onScaleButtonClick);
-  effectList.removeEventListener('change', onFilterButtonChange);
+  onEffectListChange.removeEventListener('change', onFilterButtonChange);
+  document.removeEventListener('keydown', onButtonEscKeydown);
+  closeButton.removeEventListener('click', onCloseButtonClick);
   imgPreview.removeAttribute('class');
   imgPreview.removeAttribute('style');
   form.reset();
@@ -35,13 +142,11 @@ const closeUploadPopup  = () => {
 function onButtonEscKeydown(evt) {
   if (isEscapeKey(evt)) {
     closeUploadPopup();
-    document.removeEventListener('keydown', onButtonEscKeydown);
   }
 }
 
 function onCloseButtonClick() {
   closeUploadPopup();
-  document.removeEventListener('keydown', onButtonEscKeydown);
 }
 
 const addFieldListeners = (field) => {
@@ -65,7 +170,7 @@ const onImgUploadFieldchange = () => {
   document.addEventListener('keydown',onButtonEscKeydown);
   sliderWrapper.classList.add('hidden');
   scaleContainer.addEventListener('click', onScaleButtonClick);
-  effectList.addEventListener('change', onFilterButtonChange);
+  onEffectListChange.addEventListener('change', onFilterButtonChange);
   addFieldListeners(commentsField);
   addFieldListeners(hashtagsField);
   buttonAdjustment();
@@ -179,4 +284,4 @@ const renderUploadForm = () => {
   validateForm();
 };
 
-export { renderUploadForm };
+export { renderUploadForm, initEffects };

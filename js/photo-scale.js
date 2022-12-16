@@ -16,9 +16,7 @@ const onScaleButtonClick = (evt) => {
   if (buttonScale.classList.contains('scale__control--bigger')) {
     scaleCount = Math.min(scaleInput + PercentageScale.STEP, PercentageScale.MAX);
     scaleValue.value = `${scaleCount}%`;
-  }
-
-  else {
+  } else {
     scaleCount = Math.max(scaleInput - PercentageScale.STEP, PercentageScale.MIN);
     scaleValue.value = `${scaleCount}%`;
   }
