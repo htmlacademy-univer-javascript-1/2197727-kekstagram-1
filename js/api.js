@@ -1,10 +1,10 @@
-const Urls = {
+const Url = {
   'GET': 'https://26.javascript.pages.academy/kekstagram/data',
   'POST': 'https://26.javascript.pages.academy/kekstagram'
 };
 
 const getData = (onSuccess, onFail) => {
-  fetch(Urls.GET)
+  fetch(Url.GET)
     .then((responce) => responce.json())
     .then((photos) => {
       onSuccess(photos);
@@ -15,7 +15,7 @@ const getData = (onSuccess, onFail) => {
 };
 
 const sendData = (onSuccess, onFail, body) => {
-  fetch(Urls.POST,
+  fetch(Url.POST,
     {
       method: 'POST',
       body,
