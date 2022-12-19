@@ -35,7 +35,6 @@ export const debounce = (callback, timeoutDelay = TIMEOUT_DELAY) => {
 
   return (...rest) => {
     clearTimeout(timeoutId);
-
     timeoutId = setTimeout(() => callback.apply(this, rest), timeoutDelay);
   };
 };
