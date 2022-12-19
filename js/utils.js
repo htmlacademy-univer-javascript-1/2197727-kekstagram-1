@@ -1,18 +1,10 @@
 import { TIMEOUT_DELAY } from './consts.js';
 
-export const getRandomPositiveInteger = (a, b) => {
-  const lower = Math.ceil(Math.min(Math.abs(a), Math.abs(b)));
-  const upper = Math.floor(Math.max(Math.abs(a), Math.abs(b)));
-  const result = Math.random() * (upper - lower + 1) + lower;
-
-  return Math.floor(result);
-};
-
 export const checkStringLength = (string, length) => string.length <= length;
 
 export const isEscapeKey = (evt) => evt.key === 'Escape';
 
-export const showAlert = (message, alertShowTime) => {
+export const showAlert = (alertShowTime) => {
   const alertContainer = document.createElement('div');
   alertContainer.style.zIndex = '100';
   alertContainer.style.position = 'absolute';
@@ -23,7 +15,7 @@ export const showAlert = (message, alertShowTime) => {
   alertContainer.style.fontSize = '30px';
   alertContainer.style.textAlign = 'center';
   alertContainer.style.backgroundColor = '#dc143c';
-  alertContainer.textContent = message;
+  alertContainer.textContent = 'Не удалось загрузить фотографии';
   document.body.append(alertContainer);
   setTimeout(() => alertContainer.remove(), alertShowTime);
 };
@@ -36,18 +28,5 @@ export const debounce = (callback, timeoutDelay = TIMEOUT_DELAY) => {
   return (...rest) => {
     clearTimeout(timeoutId);
     timeoutId = setTimeout(() => callback.apply(this, rest), timeoutDelay);
-  };
-};
-
-export const throttle = (callback, delayBetweenFrames) => {
-  let lastTime = 0;
-
-  return (...rest) => {
-    const now = new Date();
-
-    if (now - lastTime >= delayBetweenFrames) {
-      callback.apply(this, rest);
-      lastTime = now;
-    }
   };
 };

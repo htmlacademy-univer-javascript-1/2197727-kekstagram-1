@@ -4,10 +4,17 @@ const Url = {
 };
 
 const getData = (onSuccess, onFail) => {
-  fetch(Url.GET)
-    .then((responce) => responce.json())
+  fetch (Url.GET)
+    .then((response) => response.json())
     .then((photos) => {
       onSuccess(photos);
+    })
+    .then((response) => {
+      if (response.ok) {
+        onSuccess();
+      } else {
+        onFail();
+      }
     })
     .catch(() => {
       onFail();
@@ -15,7 +22,7 @@ const getData = (onSuccess, onFail) => {
 };
 
 const sendData = (onSuccess, onFail, body) => {
-  fetch(Url.POST,
+  fetch (Url.POST,
     {
       method: 'POST',
       body,
