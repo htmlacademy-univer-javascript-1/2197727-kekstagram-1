@@ -10,7 +10,7 @@ let photos = [];
 const getFilteredPhotos = (filterName) => {
   let filteredPhotos = [];
 
-  switch(filterName) {
+  switch (filterName) {
     case Filter.RANDOM:
       filteredPhotos = shuffleArray(photos).slice(0, MAX_COUNT_RANDOM_PHOTO);
       break;

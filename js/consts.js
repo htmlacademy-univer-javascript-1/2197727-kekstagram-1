@@ -5,6 +5,7 @@ export const DEFAULT_RENDERED_COMMENTS = 5;
 export const STEP_ADDED_COMMENTS = 5;
 export const ALERT_SHOW_TIME = 5000;
 export const MAX_COUNT_RANDOM_PHOTO = 10;
+export const TIMEOUT_DELAY = 500;
 
 export const ErrorMessage = {
   START_WITH: 'Хэш-тег должен начинаться с символа #',
