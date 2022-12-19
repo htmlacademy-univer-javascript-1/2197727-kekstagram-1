@@ -1,6 +1,8 @@
 import { MAX_LENGTH_STRING, MAX_COUNT_HASHTAG, MAX_LENGTH_HASHTAG, ErrorMessage } from './consts.js';
 import { checkStringLength, isEscapeKey } from './utils.js';
 import { onScaleButtonClick, scaleContainer } from './photo-scale.js';
+import { sendData } from './api.js';
+import { renderMessage } from './messages.js';
 
 const body = document.querySelector('body');
 const form = document.querySelector('.img-upload__form');
@@ -20,6 +22,18 @@ let errorMessage = '';
 const error = () => errorMessage;
 
 const Effect = {
+  none: {
+    filter: 'none',
+    unit: '',
+    options: {
+      range: {
+        min: 0,
+        max: 100
+      },
+      start: 100,
+      step: 1
+    }
+  },
   chrome: {
     filter: 'grayscale',
     units: '',
@@ -108,7 +122,8 @@ const onFilterButtonChange = (evt) => {
 
   if (evtHandler === 'none') {
     sliderWrapper.classList.add('hidden');
-    imgPreview.style.filter = 'none';
+    imgPreview.style.filter = Effect[evtHandler].filter;
+    imgPreview.removeAttribute('class');
   } else {
     sliderWrapper.classList.remove('hidden');
     imgPreview.removeAttribute('class');
@@ -134,6 +149,10 @@ const closeUploadPopup  = () => {
   onEffectListChange.removeEventListener('change', onFilterButtonChange);
   document.removeEventListener('keydown', onButtonEscKeydown);
   closeButton.removeEventListener('click', onCloseButtonClick);
+};
+
+const closeUploadPopupWithDefaultSettings  = () => {
+  closeUploadPopup();
   imgPreview.removeAttribute('class');
   imgPreview.removeAttribute('style');
   form.reset();
@@ -141,12 +160,12 @@ const closeUploadPopup  = () => {
 
 function onButtonEscKeydown(evt) {
   if (isEscapeKey(evt)) {
-    closeUploadPopup();
+    closeUploadPopupWithDefaultSettings();
   }
 }
 
 function onCloseButtonClick() {
-  closeUploadPopup();
+  closeUploadPopupWithDefaultSettings();
 }
 
 const addFieldListeners = (field) => {
@@ -163,12 +182,14 @@ const buttonAdjustment = () => {
   submitButton.disabled = !pristine.validate();
 };
 
-const onImgUploadFieldchange = () => {
+const doActionWithClassHidden = () => imgPreview.hasAttribute('class') ? sliderWrapper.classList.remove('hidden') : sliderWrapper.classList.add('hidden');
+
+const onImgUploadFieldChange = () => {
   editImg.classList.remove('hidden');
   body.classList.add('modal-open');
   closeButton.addEventListener('click', onCloseButtonClick);
-  document.addEventListener('keydown',onButtonEscKeydown);
-  sliderWrapper.classList.add('hidden');
+  document.addEventListener('keydown', onButtonEscKeydown);
+  doActionWithClassHidden();
   scaleContainer.addEventListener('click', onScaleButtonClick);
   onEffectListChange.addEventListener('change', onFilterButtonChange);
   addFieldListeners(commentsField);
@@ -186,13 +207,13 @@ const hashtagsHandler = (string) => {
 
   const inputText = string.toLowerCase().trim();
 
-  if(!inputText) {
+  if (!inputText) {
     return true;
   }
 
   const inputHashtags = inputText.split(/\s+/);
 
-  if(inputHashtags.length === 0) {
+  if (inputHashtags.length === 0) {
     return true;
   }
 
@@ -236,7 +257,7 @@ const hashtagsHandler = (string) => {
   return rules.every((rule) => {
     const isInvalid = rule.check;
 
-    if(isInvalid) {
+    if (isInvalid) {
       errorMessage = rule.error;
     }
 
@@ -249,7 +270,7 @@ const commentHandler = (string) => {
 
   const inputText = string.trim();
 
-  if(!inputText) {
+  if (!inputText) {
     return true;
   }
 
@@ -260,7 +281,7 @@ const commentHandler = (string) => {
 
   const isInvalid = rule.check;
 
-  if(isInvalid) {
+  if (isInvalid) {
     errorMessage = rule.error;
   }
 
@@ -277,11 +298,30 @@ const onHashtagInput = () => buttonAdjustment();
 
 const onCommentInput = () => buttonAdjustment();
 
+const setFormSubmit = (onSuccess, onError) => {
+  form.addEventListener('submit', (evt) => {
+    evt.preventDefault();
+    submitButton.disabled = true;
+    sendData(() => {
+      onSuccess();
+      renderMessage(true);
+    },
+    () => {
+      onError();
+      renderMessage();
+    },
+    new FormData(evt.target),
+    );
+  });
+};
+
 const renderUploadForm = () => {
-  imgUploadField.addEventListener('change', onImgUploadFieldchange);
+  imgUploadField.addEventListener('change', onImgUploadFieldChange);
   hashtagsField.addEventListener('input', onHashtagInput);
   commentsField.addEventListener('input', onCommentInput);
+  initEffects();
   validateForm();
+  setFormSubmit(closeUploadPopupWithDefaultSettings, closeUploadPopup);
 };
 
 export { renderUploadForm, initEffects };
