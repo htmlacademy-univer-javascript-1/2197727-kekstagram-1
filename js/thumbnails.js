@@ -39,3 +39,4 @@ const removeThumbnails = () => {
 };
 
 export { initThumbnails, removeThumbnails };
+

@@ -21,7 +21,7 @@ export const ErrorMessage = {
   MAX_LENGTH_COMMENT: `Максимальная длина комментария ${MAX_LENGTH_STRING} символов`
 };
 
-export const PercentageScale = {
+export const PercentScale = {
   STEP: 25,
   MIN: 25,
   MAX: 100

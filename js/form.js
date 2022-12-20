@@ -1,6 +1,6 @@
 import { MAX_LENGTH_STRING, MAX_COUNT_HASHTAG, MAX_LENGTH_HASHTAG, ErrorMessage } from './consts.js';
 import { checkStringLength, isEscapeKey } from './utils.js';
-import { onScaleButtonClick, scaleContainer } from './photo-scale.js';
+import { initScaleContainer, removeScaleContainer } from './photo-scale.js';
 import { sendData } from './api.js';
 import { renderMessage } from './messages.js';
 
@@ -16,10 +16,10 @@ const imgPreview = document.querySelector('.img-upload__preview').querySelector(
 const slider = document.querySelector('.effect-level__slider');
 const sliderWrapper = document.querySelector('.effect-level');
 const effectValue = document.querySelector('.effect-level__value');
-const onEffectListChange = document.querySelector('.effects__list');
+const effectList = document.querySelector('.effects__list');
 
 let errorMessage = '';
-const error = () => errorMessage;
+const getError = () => errorMessage;
 
 const Effect = {
   none: {
@@ -96,7 +96,26 @@ const Effect = {
   }
 };
 
-const initEffects = () => {
+const onEffectListChange = (evt) => {
+  const evtHandler = evt.target.value;
+
+  if (evtHandler === Effect.none.filter) {
+    sliderWrapper.classList.add('hidden');
+    imgPreview.style.filter = Effect[evtHandler].filter;
+    imgPreview.removeAttribute('class');
+  } else {
+    sliderWrapper.classList.remove('hidden');
+    imgPreview.removeAttribute('class');
+    imgPreview.classList.add(`effects__preview--${evtHandler}`);
+    slider.noUiSlider.updateOptions(Effect[evtHandler].options);
+    slider.noUiSlider.on('update', () => {
+      effectValue.value = slider.noUiSlider.get();
+      imgPreview.style.filter = `${Effect[evtHandler].filter}(${effectValue.value}${Effect[evtHandler].units})`;
+    });
+  }
+};
+
+const createSlider = () => {
   noUiSlider.create(slider, {
     range: {
       min: 0,
@@ -117,23 +136,12 @@ const initEffects = () => {
   });
 };
 
-const onFilterButtonChange = (evt) => {
-  const evtHandler = evt.target.value;
+const initEffects = () => {
+  effectList.addEventListener('change', onEffectListChange);
+};
 
-  if (evtHandler === 'none') {
-    sliderWrapper.classList.add('hidden');
-    imgPreview.style.filter = Effect[evtHandler].filter;
-    imgPreview.removeAttribute('class');
-  } else {
-    sliderWrapper.classList.remove('hidden');
-    imgPreview.removeAttribute('class');
-    imgPreview.classList.add(`effects__preview--${evtHandler}`);
-    slider.noUiSlider.updateOptions(Effect[evtHandler].options);
-    slider.noUiSlider.on('update', () => {
-      effectValue.value = slider.noUiSlider.get();
-      imgPreview.style.filter = `${Effect[evtHandler].filter}(${effectValue.value}${Effect[evtHandler].units})`;
-    });
-  }
+const removeEffects = () => {
+  effectList.removeEventListener('change', onEffectListChange);
 };
 
 const pristine = new Pristine(form, {
@@ -145,9 +153,10 @@ const pristine = new Pristine(form, {
 const closeUploadPopup  = () => {
   editImg.classList.add('hidden');
   body.classList.remove('modal-open');
-  scaleContainer.removeEventListener('click', onScaleButtonClick);
-  onEffectListChange.removeEventListener('change', onFilterButtonChange);
-  document.removeEventListener('keydown', onButtonEscKeydown);
+  removeScaleContainer();
+  removeEffects();
+  imgUploadField.value = '';
+  document.removeEventListener('keydown', onDocumentEscKeydown);
   closeButton.removeEventListener('click', onCloseButtonClick);
 };
 
@@ -158,7 +167,7 @@ const closeUploadPopupWithDefaultSettings  = () => {
   form.reset();
 };
 
-function onButtonEscKeydown(evt) {
+function onDocumentEscKeydown(evt) {
   if (isEscapeKey(evt)) {
     closeUploadPopupWithDefaultSettings();
   }
@@ -170,15 +179,15 @@ function onCloseButtonClick() {
 
 const addFieldListeners = (field) => {
   field.addEventListener('focus', () => {
-    document.removeEventListener('keydown', onButtonEscKeydown);
+    document.removeEventListener('keydown', onDocumentEscKeydown);
   });
 
   field.addEventListener('blur', () => {
-    document.addEventListener('keydown', onButtonEscKeydown);
+    document.addEventListener('keydown', onDocumentEscKeydown);
   });
 };
 
-const buttonAdjustment = () => {
+const isBlockSubmitBtn = () => {
   submitButton.disabled = !pristine.validate();
 };
 
@@ -188,13 +197,13 @@ const onImgUploadFieldChange = () => {
   editImg.classList.remove('hidden');
   body.classList.add('modal-open');
   closeButton.addEventListener('click', onCloseButtonClick);
-  document.addEventListener('keydown', onButtonEscKeydown);
+  document.addEventListener('keydown', onDocumentEscKeydown);
   doActionWithClassHidden();
-  scaleContainer.addEventListener('click', onScaleButtonClick);
-  onEffectListChange.addEventListener('change', onFilterButtonChange);
+  initEffects();
+  initScaleContainer();
   addFieldListeners(commentsField);
   addFieldListeners(hashtagsField);
-  buttonAdjustment();
+  isBlockSubmitBtn();
 };
 
 const getUniqueHashtags = (hashtags) => {
@@ -289,29 +298,32 @@ const commentHandler = (string) => {
 };
 
 const validateForm = () => {
-  pristine.addValidator(hashtagsField, hashtagsHandler, error);
-  pristine.addValidator(commentsField, commentHandler, error);
-  buttonAdjustment();
+  pristine.addValidator(hashtagsField, hashtagsHandler, getError);
+  pristine.addValidator(commentsField, commentHandler, getError);
+  isBlockSubmitBtn();
 };
 
-const onHashtagInput = () => buttonAdjustment();
+const onHashtagInput = () => isBlockSubmitBtn();
 
-const onCommentInput = () => buttonAdjustment();
+const onCommentInput = () => isBlockSubmitBtn();
 
 const setFormSubmit = (onSuccess, onError) => {
   form.addEventListener('submit', (evt) => {
     evt.preventDefault();
-    submitButton.disabled = true;
-    sendData(() => {
-      onSuccess();
-      renderMessage(true);
-    },
-    () => {
-      onError();
-      renderMessage();
-    },
-    new FormData(evt.target),
-    );
+    if (pristine.validate()) {
+      submitButton.disabled = true;
+      sendData(
+        () => {
+          onSuccess();
+          renderMessage(true);
+        },
+        () => {
+          onError();
+          renderMessage();
+        },
+        new FormData(evt.target),
+      );
+    }
   });
 };
 
@@ -319,9 +331,9 @@ const renderUploadForm = () => {
   imgUploadField.addEventListener('change', onImgUploadFieldChange);
   hashtagsField.addEventListener('input', onHashtagInput);
   commentsField.addEventListener('input', onCommentInput);
-  initEffects();
+  createSlider();
   validateForm();
   setFormSubmit(closeUploadPopupWithDefaultSettings, closeUploadPopup);
 };
 
-export { renderUploadForm, initEffects };
+export { renderUploadForm };
