@@ -5,16 +5,15 @@ const Url = {
 
 const getData = (onSuccess, onFail) => {
   fetch (Url.GET)
-    .then((response) => response.json())
-    .then((photos) => {
-      onSuccess(photos);
-    })
     .then((response) => {
       if (response.ok) {
-        onSuccess();
+        return response.json;
       } else {
         onFail();
       }
+    })
+    .then((data) => {
+      onSuccess(data);
     })
     .catch(() => {
       onFail();
