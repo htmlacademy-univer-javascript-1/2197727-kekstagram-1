@@ -4,6 +4,11 @@ export const MAX_LENGTH_STRING = 140;
 export const MAX_COUNT_HASHTAG = 5;
 export const MAX_LENGTH_HASHTAG = 20;
 export const ALERT_SHOW_TIME = 5000;
+export const MAX_LENGTH_STRING = 140;
+export const MAX_COUNT_HASHTAG = 5;
+export const MAX_LENGTH_HASHTAG = 20;
+export const MAX_COUNT_RANDOM_PHOTO = 10;
+export const TIMEOUT_DELAY = 500;
 
 export const ErrorMessage = {
   START_WITH: 'Хэш-тег должен начинаться с символа #',
@@ -20,4 +25,10 @@ export const PercentageScale = {
   STEP: 25,
   MIN: 25,
   MAX: 100
+};
+
+export const Filter = {
+  DEFAULT: 'filter-default',
+  RANDOM: 'filter-random',
+  DISCUSSED: 'filter-discussed',
 };

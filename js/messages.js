@@ -39,7 +39,8 @@ const renderMessage = (isSuccess = false) => {
 };
 
 function removeMessage() {
-  const  message = document.querySelector('.js-message');
+  const message = document.querySelector('.js-message');
+
   message.remove();
 }
 
