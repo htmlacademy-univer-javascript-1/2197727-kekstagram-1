@@ -9,6 +9,13 @@ const getData = (onSuccess, onFail) => {
     .then((photos) => {
       onSuccess(photos);
     })
+    .then((response) => {
+      if (response.ok) {
+        onSuccess();
+      } else {
+        onFail();
+      }
+    })
     .catch(() => {
       onFail();
     });

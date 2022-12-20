@@ -1,9 +1,12 @@
+export const DEFAULT_RENDERED_COMMENTS = 5;
+export const STEP_ADDED_COMMENTS = 5;
 export const MAX_LENGTH_STRING = 140;
 export const MAX_COUNT_HASHTAG = 5;
 export const MAX_LENGTH_HASHTAG = 20;
-export const DEFAULT_RENDERED_COMMENTS = 5;
-export const STEP_ADDED_COMMENTS = 5;
 export const ALERT_SHOW_TIME = 5000;
+export const MAX_LENGTH_STRING = 140;
+export const MAX_COUNT_HASHTAG = 5;
+export const MAX_LENGTH_HASHTAG = 20;
 export const MAX_COUNT_RANDOM_PHOTO = 10;
 export const TIMEOUT_DELAY = 500;
 
